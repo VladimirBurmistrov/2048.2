@@ -1,52 +1,329 @@
-# Prerequisites
-*.d
+#include "stdafx.h"
+#include <iostream>
+#include <ctime>
 
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
+using namespace std;
 
-# Linker output
-*.ilk
-*.map
-*.exp
+void input_mas(unsigned int  mas[4][4]) {
 
-# Precompiled Headers
-*.gch
-*.pch
+	for (int k = 0; k < 3;) {
+		unsigned int i = rand() % 4;
+		unsigned int j = rand() % 4;
+		unsigned int r = rand() % 11;
+		if (mas[i][j] == 0) {
+			if (r < 10) {
+				mas[i][j] = 2;
+				k++;
+			}
+			else
+				mas[i][j] = 4;
+			k++;
+		}
+	}
+}
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
+void nova(unsigned int  mas[4][4]) {
+	int k = 0;
+	while (k != 1) {
+		unsigned int i = rand() % 4;
+		unsigned int j = rand() % 4;
+		unsigned int r = rand() % 11;
+		if (mas[i][j] == 0) {
+			if (r < 10) {
+				mas[i][j] = 2;
+				k = 1;
+			}
+			else
+				mas[i][j] = 4;
+			k = 1;
+		}
+	}
+}
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
+void output_mas(unsigned int mas[4][4]) {
+	cout << endl;
+	for (unsigned int i = 0; i < 4; ++i) {
+		for (unsigned int j = 0; j < 4; ++j) {
+			if (mas[i][j] == 0) {
+				cout << "*\t";
+			}
+			else {
+				cout << mas[i][j] << "\t";
+			}
+		}
+		cout << endl;
+	}
+}
 
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
+bool down(unsigned int mas[4][4]) {
+	unsigned int a = 0;
+	for (unsigned int j = 0; j < 4; j++) {
+		for (unsigned int i = 3; i > 0; i--) {
+			if (mas[i][j] == 0) {
+				for (int k = i - 1; k >= 0; k--) {
+					if (mas[k][j] != 0) {
+						mas[i][j] = mas[k][j];
+						mas[k][j] = 0;
+						a++;
+						break;
+					}
+				}
+			}
+		}
+	}
+	for (unsigned int j = 0; j < 4; j++) {
+		for (unsigned int i = 3; i > 0; i--) {
+			if (mas[i][j] == mas[i - 1][j] && mas[i][j] != 0) {
+				mas[i][j] *= 2;
+				mas[i - 1][j] = 0;
+				a++;
+			}
+		}
+	}
+	if (a == 0) {
+		return false;
+	}
+	for (unsigned int j = 0; j < 4; j++) {
+		for (unsigned int i = 3; i > 0; i--) {
+			if (mas[i][j] == 0) {
+				for (int k = i - 1; k >= 0; k--) {
+					if (mas[k][j] != 0) {
+						mas[i][j] = mas[k][j];
+						mas[k][j] = 0;
+						break;
+					}
+				}
+			}
+		}
+	}
+	return true;
+}
 
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
+bool up(unsigned int mas[4][4]) {
+	unsigned int a = 0;
+	for (unsigned int j = 0; j < 4; j++) {
+		for (unsigned int i = 0; i < 4; i++) {
+			if (mas[i][j] == 0) {
+				for (int k = i + 1; k < 4; k++) {
+					if (mas[k][j] != 0) {
+						mas[i][j] = mas[k][j];
+						mas[k][j] = 0;
+						a++;
+						break;
+					}
+				}
+			}
+		}
+	}
+	for (unsigned int j = 0; j < 4; j++) {
+		for (unsigned int i = 0; i < 4; i++) {
+			if (mas[i][j] == mas[i + 1][j] && mas[i][j] != 0) {
+				mas[i][j] *= 2;
+				mas[i + 1][j] = 0;
+				a++;
+			}
+		}
+	}
+	if (a == 0) {
+		return false;
+	}
+	for (unsigned int j = 0; j < 4; j++) {
+		for (unsigned int i = 0; i < 4; i++) {
+			if (mas[i][j] == 0) {
+				for (int k = i + 1; k < 4; k++) {
+					if (mas[k][j] != 0) {
+						mas[i][j] = mas[k][j];
+						mas[k][j] = 0;
+						break;
+					}
+				}
+			}
+		}
+	}
+	return true;
+}
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+bool left(unsigned int mas[4][4]) {
+	unsigned int a = 0;
+	for (unsigned int i = 0; i < 4; i++) {
+		for (unsigned int j = 0; j < 3; j++) {
+			if (mas[i][j] == 0) {
+				for (int k = j + 1; k <= 3; k++) {
+					if (mas[i][k] != 0) {
+						mas[i][j] = mas[i][k];
+						mas[i][k] = 0;
+						a++;
+						break;
+					}
+				}
+			}
+		}
+	}
+	for (unsigned int i = 0; i < 4; i++) {
+		for (unsigned int j = 0; j < 3; j++) {
+			if (mas[i][j] == mas[i][j + 1] && mas[i][j] != 0) {
+				mas[i][j] *= 2;
+				mas[i][j + 1] = 0;
+				a++;
+			}
+		}
+	}
+	if (a == 0) {
+		return false;
+	}
+	for (unsigned int i = 0; i < 4; i++) {
+		for (unsigned int j = 0; j < 3; j++) {
+			if (mas[i][j] == 0) {
+				for (int k = j + 1; k <= 3; k++) {
+					if (mas[i][k] != 0) {
+						mas[i][j] = mas[i][k];
+						mas[i][k] = 0;
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+bool right(unsigned int mas[4][4]) {
+	unsigned int a = 0;
+	for (unsigned int i = 0; i < 4; i++) {
+		for (unsigned int j = 3; j > 0; j--) {
+			if (mas[i][j] == 0) {
+				for (int k = j - 1; k >= 0; k--) {
+					if (mas[i][k] != 0) {
+						mas[i][j] = mas[i][k];
+						mas[i][k] = 0;
+						a++;
+						break;
+					}
+				}
+			}
+		}
+	}
+	for (unsigned int i = 0; i < 4; i++) {
+		for (unsigned int j = 3; j > 0; j--) {
+			if (mas[i][j] == mas[i][j - 1] && mas[i][j] != 0) {
+				mas[i][j] *= 2;
+				mas[i][j - 1] = 0;
+				a++;
+			}
+		}
+	}
+	if (a == 0) {
+		return false;
+	}
+	for (unsigned int i = 0; i < 4; i++) {
+		for (unsigned int j = 3; j > 0; j--) {
+			if (mas[i][j] == 0) {
+				for (int k = j - 1; k >= 0; k--) {
+					if (mas[i][k] != 0) {
+						mas[i][j] = mas[i][k];
+						mas[i][k] = 0;
+						break;
+					}
+				}
+			}
+		}
+	}
+	return true;
+}
+
+bool check(unsigned int mas[4][4])
+{
+	for (unsigned int i = 0; i < 4; i++) {
+		for (unsigned int j = 0; j < 4; j++) {
+			if (i != 3) {
+				if (mas[i][j] == mas[i + 1][j] || mas[i][j] == 0) {
+					return true;
+				}
+			}
+			if (j != 3) {
+				if (mas[i][j] == mas[i][j + 1] || mas[i][j] == 0) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+int main()
+{
+	srand(time(NULL));
+	unsigned int mas[4][4] = { { 0, 0, 0, 0 },
+	{ 0, 0, 0, 0 },
+	{ 0, 0, 0, 0 },
+	{ 0, 0, 0, 0 } };
+	int exit = 0;
+	unsigned int score = 0;
+	input_mas(mas);
+	output_mas(mas);
+	char op;
+	while ((cin >> op) && (check(mas))) {
+		switch (op) {
+		case 's': {
+			if (down(mas)) {
+				nova(mas);
+				output_mas(mas);
+			}
+			else {
+				cout << endl;
+				cout << "Make another move" << endl;
+			}
+			break;
+		}
+		case 'w': {
+			if (up(mas)) {
+				nova(mas);
+				output_mas(mas);
+			}
+			else {
+				cout << endl;
+				cout << "Make another move" << endl;
+			}
+			break;
+		}
+		case 'a': {
+			if (left(mas)) {
+				nova(mas);
+				output_mas(mas);
+			}
+			else {
+				cout << endl;
+				cout << "Make another move" << endl;
+			}
+			break;
+		}
+		case 'd': {
+			if (right(mas)) {
+				nova(mas);
+				output_mas(mas);
+			}
+			else {
+				cout << endl;
+				cout << "Make another move" << endl;
+			}
+			break;
+		}
+		case 'q': {
+			cout << endl << "Game over" << endl;
+			cin.get();
+			cin.get();
+			return -1;
+		}
+		default: {
+			cout << "Make another move" << endl;
+			break;
+		}
+		}
+	}
+	if (!(check(mas))) {
+		cout << endl << "Game over" << endl;
+		cin.get();
+		cin.get();
+		return -1;
+	}
+	return 0;
+}
